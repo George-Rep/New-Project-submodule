@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 )
 public class AppErrorHandler extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    ResourceBundle resource= (ResourceBundle) getServletContext().getAttribute("Properties");
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processError(request, response);
@@ -40,6 +40,7 @@ public class AppErrorHandler extends HttpServlet {
         Throwable throwable = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
         Integer statusCode = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         String servletName = (String) request.getAttribute(RequestDispatcher.ERROR_SERVLET_NAME);
+        ResourceBundle resource= (ResourceBundle) getServletContext().getAttribute("Properties");
         if (servletName == null) {
             servletName = resource.getString("AppErrorHandler.message.null");
         }

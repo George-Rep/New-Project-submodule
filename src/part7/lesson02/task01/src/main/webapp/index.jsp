@@ -9,6 +9,7 @@
 <ul>
     <li><a href="${pageContext.request.contextPath}/person/list">List students</a></li>
     <li><a href="${pageContext.request.contextPath}/person">New student</a></li>
+    <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
 </ul>
 </body>
 </html>

@@ -3,6 +3,7 @@ package ru.inno.stc14.servlet;
 
 import ru.inno.stc14.service.UsersService;
 import ru.inno.stc14.service.UsersServiceImpl;
+import ru.inno.stc14.service.ResourceUtility;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -51,16 +52,18 @@ public class LoginServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ResourceBundle resource= (ResourceBundle) getServletContext().getAttribute("Properties");
+        ResourceBundle resource = (ResourceBundle) getServletContext().getAttribute("Properties");
         HttpSession session = req.getSession(false);
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         String redirect = req.getParameter("from");
-        if (redirect.equals("")) redirect = resource.getString("LoginServlet.defaultPath");
+        req.setCharacterEncoding(resource.getString("LoginServlet.characterEncoding"));
+        if (redirect.equals("") || redirect.equals(resource.getString("LoginServlet.logoutPath")))
+            redirect = resource.getString("LoginServlet.defaultPath");
 
         switch (users.validateLogin(login, password)) {
             case 0:
-                req.setAttribute("ERROR_MESSAGE", resource.getString("LoginServlet.wrongLogin"));
+                req.setAttribute("ERROR_MESSAGE", ResourceUtility.resourceGetString(resource,"LoginServlet.wrongLogin"));
                 req.setAttribute("LOGIN_REDIRECT", redirect);
                 req.getRequestDispatcher("/login.jsp").forward(req, resp);
                 break;
@@ -69,12 +72,11 @@ public class LoginServlet extends HttpServlet {
                 resp.sendRedirect(req.getContextPath() + redirect);
                 break;
             case 2:
-                req.setAttribute("ERROR_MESSAGE", resource.getString("LoginServlet.wrongPass"));
+                req.setAttribute("ERROR_MESSAGE", ResourceUtility.resourceGetString(resource,"LoginServlet.wrongPass"));
                 req.setAttribute("LOGIN_REDIRECT", redirect);
                 req.getRequestDispatcher("/login.jsp").forward(req, resp);
                 break;
         }
-
 
 
     }
