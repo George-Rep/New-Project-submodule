@@ -18,20 +18,24 @@ import java.util.stream.Stream;
 @WebFilter("/*")
 public class LoginFilter implements Filter {
     private String[] noAuthURLs = null;
-
+    /**
+     * в noAuthURLs помещается список URL не подлежащих аутентификации
+     */
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
         ResourceBundleInterface resource = ResourceBundleInstance.getInstance().getResource();
         noAuthURLs = resource.getResourceBundleString("LoginFilter.noAuthURL").split(resource.getResourceBundleString("LoginFilter.delimiter"));
     }
 
 
     /**
-     * фильтр для аутентификации
+     * фильтр для аутентификации.
      * если страница не в списке исключений, и в http сеансе не установлен атрибут USER,
      * то forward на страницу логина.
-     * При этом в login.jsp через атрибут request устанавливается поле для хранения
-     * url, по которому надо будет вернуться.
+     * При этом в login.jsp через атрибут request LOGIN_REDIRECT устанавливается поле для хранения
+     * url, по данному URL надо будет вернуться на запрошенную страницу.
+     * @throws IOException
+     * @throws ServletException
      */
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -49,9 +53,10 @@ public class LoginFilter implements Filter {
     }
 
     /**
-     * проверяется, нужна ли аутентификация для этой страницы (url) (не нужна, если страница есть в списке)
-     *
+     * проверяется, нужна ли аутентификация для этой страницы (url) (не нужна, если страница есть в списке).
+     * возвращает true, если нужна
      * @param url url
+     * @return boolean
      */
     private boolean needsAuthentication(String url) {
         for (String validUrl : noAuthURLs) {

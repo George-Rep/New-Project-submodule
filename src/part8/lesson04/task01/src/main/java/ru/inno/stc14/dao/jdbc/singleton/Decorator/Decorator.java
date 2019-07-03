@@ -14,7 +14,11 @@ public class Decorator implements ResourceBundleInterface {
     Decorator(ResourceBundle resource) {
         this.resource = resource;
     }
-
+    /**
+     *
+     * получить строку по ключу и перекодировать
+     * @param key ключ
+     */
     @Override
     public String getResourceBundleString(String key) {
         return resource.getString(key);

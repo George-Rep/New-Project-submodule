@@ -13,10 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import java.util.List;
+
 /**
- *
  * выдача списка person
- *
  */
 @WebServlet(
         name = "personList",
@@ -31,10 +30,9 @@ public class ListPersonServlet extends HttpServlet {
         person = new PersonServiceImpl(getServletContext());
         super.init();
     }
+
     /**
-     *
      * выдача списка person
-     *
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

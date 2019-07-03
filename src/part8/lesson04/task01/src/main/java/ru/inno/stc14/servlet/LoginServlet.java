@@ -42,17 +42,21 @@ public class LoginServlet extends HttpServlet {
     }
 
     /**
-     * проверка логина и пароля. Если такое сочетание есть в БД, то редирект на страницу, с которой
+     * проверка логина и пароля. Используется объект Command (конкретная команда по паттерну Команда) , полученный
+     * от user.validateLogin()
+     * Если сочетание логина и пароля есть в БД, то редирект на страницу, с которой
      * мы зашли на /login . Путь для редиректа передается через поле from в login.jsp .
      * В случае ошибки с паролем или логином, возвращаемся на страницу /login.jsp ,
      * request получает атрибуты с путем для редиректа (LOGIN_REDIRECT) и с сообщением об ошибке (ERROR_MESSAGE)
      *
      * @see LoginFilter
+     * @see ru.inno.stc14.dao.jdbc.command.Command
+     * @see UserServiceImpl
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResourceBundleInterface resource = ResourceBundleInstance.getInstance().getResource();
-        HttpSession session = req.getSession(false);
+      //  HttpSession session = req.getSession(false);
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         String redirect = req.getParameter("from");
@@ -60,22 +64,7 @@ public class LoginServlet extends HttpServlet {
         if (redirect.equals("") || redirect.equals(resource.getResourceBundleString("LoginServlet.logoutPath")))
             redirect = resource.getResourceBundleString("LoginServlet.defaultPath");
 
-        switch (user.validateLogin(login, password)) {
-            case 0:
-                req.setAttribute("ERROR_MESSAGE", resource.getResourceBundleString("LoginServlet.wrongLogin"));
-                req.setAttribute("LOGIN_REDIRECT", redirect);
-                req.getRequestDispatcher("/login.jsp").forward(req, resp);
-                break;
-            case 1:
-                session.setAttribute("USER", login);
-                resp.sendRedirect(req.getContextPath() + redirect);
-                break;
-            case 2:
-                req.setAttribute("ERROR_MESSAGE", resource.getResourceBundleString("LoginServlet.wrongPass"));
-                req.setAttribute("LOGIN_REDIRECT", redirect);
-                req.getRequestDispatcher("/login.jsp").forward(req, resp);
-                break;
-        }
+        user.validateLogin(login, password,req,resp,redirect).loginAction();
 
     }
 

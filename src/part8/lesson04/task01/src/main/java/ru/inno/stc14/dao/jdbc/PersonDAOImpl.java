@@ -31,7 +31,7 @@ public class PersonDAOImpl implements PersonDAO {
     /**
      *
      * конструктор
-     * в данной реализации ServletContext используется для тспользования функции
+     * в данной реализации ServletContext используется для использования функции
      * ServletContext.getRealPath
      * @param ctx ServletContext
      * @see ConnectionInstance
